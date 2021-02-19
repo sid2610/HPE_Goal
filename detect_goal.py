@@ -128,7 +128,6 @@ step = 10
 
 result = []
 for j in range(0, vid.get_length()):
-    print(j)
     frame = vid.get_data(j)
     if j%5 == 0:
         (ux,uy,lx,ly) = penalty_area(frame)
@@ -138,8 +137,6 @@ for j in range(0, vid.get_length()):
     test_bw = rgb2gray(test)
     test_bw = np.expand_dims(test_bw, -1)
     for x,y,roi in sliding_window(test_bw, win, step):
-        if x==0 and y%10==0:
-            print(x,y)
         locs.append((x,y))
         t = np.expand_dims(roi, 0)
         preds.append(model_cnn_adam.predict(t))
