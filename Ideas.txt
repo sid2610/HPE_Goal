@@ -1,6 +1,0 @@
-Ideas
-
-From Basketball analysis and football analysis video in the article- 
-	Use court tracking but just for the area inside the penalty area or something like that since it's just goal detection
-	Player tracking can be ignored for now because only the goals is the concern
-	Ball tracking
