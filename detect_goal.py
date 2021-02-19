@@ -13,7 +13,7 @@ from scipy.ndimage.filters import convolve
 from skimage.color import rgb2gray
 from skimage.transform import resize
 
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Conv2D, Dense, Dropout, BatchNormalization, MaxPooling2D, Flatten
 
 ap = argparse.ArgumentParser()
@@ -119,36 +119,7 @@ def sliding_window(img, win, step):
         for x in range(0,img.shape[1]-win[0],step):
             yield (x,y,img[y:y+win[1],x:x+win[0]])
 
-model_cnn_adam = Sequential()
-
-model_cnn_adam.add(Conv2D(16, (3,3), (1,1), 'same', activation='relu', input_shape = (100,100,1)))
-model_cnn_adam.add(BatchNormalization(-1))
-model_cnn_adam.add(MaxPooling2D((2,2)))
-model_cnn_adam.add(Dropout(0.25))
-
-model_cnn_adam.add(Conv2D(32, (3,3), (1,1), 'same', activation='relu'))
-model_cnn_adam.add(BatchNormalization(-1))
-model_cnn_adam.add(MaxPooling2D((2,2)))
-model_cnn_adam.add(Dropout(0.25))
-
-model_cnn_adam.add(Conv2D(64, (3,3), (1,1), 'same', activation='relu'))
-model_cnn_adam.add(BatchNormalization(-1))
-model_cnn_adam.add(MaxPooling2D((2,2)))
-model_cnn_adam.add(Dropout(0.25))
-
-model_cnn_adam.add(Conv2D(128, (3,3), (1,1), 'same', activation='relu'))
-model_cnn_adam.add(BatchNormalization(-1))
-model_cnn_adam.add(MaxPooling2D((2,2)))
-model_cnn_adam.add(Dropout(0.25))
-
-model_cnn_adam.add(Flatten(input_shape = (6,6,128)))
-model_cnn_adam.add(Dense(1024, activation='relu'))
-model_cnn_adam.add(Dense(64, activation='relu'))
-model_cnn_adam.add(Dense(1, activation='sigmoid'))
-
-model_cnn_adam.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', 'mse'])
-
-model_cnn_adam.load_weights('./ball_adam.h5')
+model_cnn_adam = load_model('./ball_detector.h5')
 
 vid = imageio.get_reader(args["dir"] + args["video"])
 
