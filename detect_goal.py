@@ -144,12 +144,13 @@ win = (100,100)
 step = 10
 
 result = []
-for j in range(0, vid.get_length(), 5):
+for j in range(0, vid.get_length()):
     print(j)
     frame = vid.get_data(j)
-    (ux,uy,lx,ly) = penalty_area(frame)
+    if j%5 == 0:
+        (ux,uy,lx,ly) = penalty_area(frame)
     locs = []
-    preds = [0]
+    preds = []
     test = frame[uy:ly, ux:lx]
     test_bw = rgb2gray(test)
     test_bw = np.expand_dims(test_bw, -1)
@@ -160,10 +161,11 @@ for j in range(0, vid.get_length(), 5):
         t = np.expand_dims(roi, 0)
         preds.append(model_cnn_adam.predict(t))
     clone = test.copy()
-    for k in range(len(preds)):
-        if np.max(preds) > 0.99:
-            i = np.argmax(preds)
-            cv2.rectangle(clone, (locs[i][0],locs[i][1]), (locs[i][0]+100,locs[i][1]+100), (0,0,255), 2)
+    if np.max(preds)>0.99:
+        for k in range(len(preds)):
+            if np.max(preds) > 0.99:
+                i = np.argmax(preds)
+                cv2.rectangle(clone, (locs[i][0],locs[i][1]), (locs[i][0]+100,locs[i][1]+100), (0,0,255), 2)
     result.append(clone)
 
 for i in range(len(result)):
