@@ -38,52 +38,64 @@ def penalty_area(frame):
         for x in range(frame.shape[1]):
             if (frame[y][x][1]<(np.max([frame[y][x][0],frame[y][x][2]]))):
                 frame_1[y][x] *= 0
+
     frame_2 = color.rgb2gray(frame_1)
+
     v = 0
     for i in range(frame_2.shape[0]):
         if (np.sum(frame_2[i])/frame_2.shape[1])>0.2:
             v = i
             break
     frame_3 = frame_2[v:]
+
     e = sobel_edges(frame_3)
     e_1 = (e>0.1) * 0.5
-    uy = 10
+
+    uy = 0
     while np.sum(e_1[uy:uy+5,900:1000])/100<1.5:
         uy += 1
+
     ux = 750
-    while np.sum(e_1[uy:uy+5,ux:ux+5])!=0:
+    while np.sum(e_1[uy:uy+10,ux:ux+5])!=0:
         ux += 10
     ux -= 10
-    while np.sum(e_1[uy:uy+5,ux])!=0:
+    while np.sum(e_1[uy:uy+10,ux:ux+5])!=0:
         ux += 1
-    ugy = uy + 10
+
+    ugy = uy + 50
     while np.sum(e_1[ugy:ugy+5,ux-100:ux])/100<1.5:
         ugy += 1
+
     ugx = ux
-    while np.sum(e_1[ugy:ugy+5,ugx])!=0:
+    while np.sum(e_1[ugy:ugy+10,ugx:ugx+5])!=0:
         ugx += 10
     ugx -= 10
-    while np.sum(e_1[ugy:ugy+5,ugx])!=0:
+    while np.sum(e_1[ugy:ugy+10,ugx:ugx+5])!=0:
         ugx += 1
-    upy = ugy + 10
+
+    upy = ugy + 50
     while np.sum(e_1[upy:upy+5,ugx-50:ugx])/50<1.5:
         upy += 1
+
     upx = ugx
-    while np.sum(e_1[upy:upy+5,upx])!=0:
+    while np.sum(e_1[upy:upy+10,upx-10:upx])!=0:
         upx -= 10
     upx += 10
-    while np.sum(e_1[upy:upy+5,upx])!=0:
+    while np.sum(e_1[upy:upy+10,upx-10:upx])!=0:
         upx -= 1
-    lpy = upy + 10
-    while np.sum(e_1[lpy:lpy+5,upx+50:upx+100])/50<1.5:
+
+    lpy = upy + 50
+    while np.sum(e_1[lpy:lpy+5,upx+100:upx+150])/50<1.5:
         lpy += 1
-    lpx = upx+100
-    while np.sum(e_1[lpy:ugy+5,lpx])!=0:
+
+    lpx = upx+150
+    while np.sum(e_1[lpy:lpy+10,lpx:lpx+5])!=0:
         lpx += 10
     lpx -= 10
-    while np.sum(e_1[lpy:lpy+5,lpx])!=0:
+    while np.sum(e_1[lpy:lpy+10,lpx:lpx+5])!=0:
         lpx += 1
-    return upx, upy, lpx, lpy
+
+    return upx, v+upy, lpx, v+lpy
 
 def extract_frame(frame, x, y, h, w):
     hh = int(h/2)
